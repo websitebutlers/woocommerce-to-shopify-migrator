@@ -1,6 +1,6 @@
 import { app, BrowserWindow, shell, Menu, ipcMain, dialog } from 'electron';
 import path from 'path';
-import { spawn, ChildProcess } from 'child_process';
+import { fork, ChildProcess } from 'child_process';
 import { createMenu } from './menu';
 import { getAppDataPath, ensureAppDataDir, getDbPath } from './database';
 
@@ -26,22 +26,27 @@ function startNextServer(): Promise<void> {
       return;
     }
 
-    // In production, start the Next.js production server
-    const serverPath = path.join(process.resourcesPath, 'app');
+    // In production, start the Next.js standalone server
+    // The standalone server is at .next/standalone/server.js
+    const serverPath = path.join(process.resourcesPath, 'app', '.next', 'standalone');
+    const serverScript = path.join(serverPath, 'server.js');
 
-    nextServer = spawn('npx', ['next', 'start', '-p', PORT.toString()], {
+    // Use fork to run with Electron's built-in Node runtime
+    nextServer = fork(serverScript, [], {
       cwd: serverPath,
       env: {
         ...process.env,
         NODE_ENV: 'production',
+        PORT: PORT.toString(),
+        HOSTNAME: 'localhost',
         DB_PATH: getDbPath(),
       },
-      shell: true,
+      stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
     });
 
     nextServer.stdout?.on('data', (data) => {
       console.log(`Next.js: ${data}`);
-      if (data.toString().includes('Ready')) {
+      if (data.toString().includes('Ready') || data.toString().includes('started')) {
         resolve();
       }
     });

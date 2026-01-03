@@ -56,3 +56,4 @@ next-env.d.ts
 *.exe
 *.AppImage
 *.snap
+firebase-debug.log
