@@ -29,15 +29,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Next.js
-        run: npm run build
-
-      - name: Compile Electron
-        run: npx tsc -p electron/tsconfig.json
+      - name: Build Electron app
+        run: npm run electron:build
 
       - name: Package Electron app
         if: startsWith(github.ref, 'refs/tags/v')
-        run: npm run electron:package
+        run: npx electron-builder
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

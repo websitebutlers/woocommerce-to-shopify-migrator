@@ -13,8 +13,7 @@
     "lint": "eslint",
     "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && npm run electron:start\"",
     "electron:start": "tsc -p electron/tsconfig.json && electron .",
-    "electron:build": "npm run build && npm run build:static && tsc -p electron/tsconfig.json",
-    "build:static": "next build && next export",
+    "electron:build": "npm run build && tsc -p electron/tsconfig.json",
     "electron:package": "npm run electron:build && electron-builder",
     "electron:package:mac": "npm run electron:build && electron-builder --mac",
     "electron:package:win": "npm run electron:build && electron-builder --win",
@@ -75,7 +74,26 @@
     },
     "files": [
       "dist-electron/**/*",
-      "out/**/*"
+      ".next/**/*",
+      "public/**/*",
+      "package.json",
+      "next.config.ts",
+      "!**/*.map"
+    ],
+    "extraResources": [
+      {
+        "from": ".",
+        "to": "app",
+        "filter": [
+          ".next/**/*",
+          "public/**/*",
+          "package.json",
+          "next.config.ts",
+          "node_modules/**/*",
+          "!node_modules/.cache/**/*",
+          "!**/*.map"
+        ]
+      }
     ],
     "mac": {
       "category": "public.app-category.developer-tools",
@@ -98,11 +116,6 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
     },
-    "extraResources": [
-      {
-        "from": "node_modules/better-sqlite3",
-        "to": "node_modules/better-sqlite3"
-      }
-    ]
+    "asar": false
   }
 }
