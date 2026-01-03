@@ -53,7 +53,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@electron/rebuild": "^3.8.1",
+    "@electron/rebuild": "^4.0.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -83,17 +83,23 @@
       {
         "from": ".next/standalone",
         "to": "app/.next/standalone",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": ".next/static",
         "to": "app/.next/standalone/.next/static",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "public",
         "to": "app/.next/standalone/public",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "mac": {
